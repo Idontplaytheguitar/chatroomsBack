@@ -1,13 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Room } from './db/schemas/Room';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('Rooms')
-  getRooms(): Promise<Room[]> {
-    return this.appService.getRooms();
+  @Get()
+  getHello(): void {
+    return this.appService.getHello();
   }
 }
