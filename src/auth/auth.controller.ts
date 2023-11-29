@@ -7,7 +7,6 @@ import {
   Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
@@ -31,10 +30,12 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('auth/register')
-  async register(@Request() req) {
-    return this.authService.login(req.user);
+  async register(@Body() requestBody: { username: string; password: string }) {
+    return this.authService.register(
+      requestBody.username,
+      requestBody.password,
+    );
   }
 
   @Post('auth/logout')

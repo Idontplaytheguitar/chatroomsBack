@@ -1,3 +1,5 @@
-export const constants = {
-  jwtSecret: process.env.JWT_SECRET,
+export const constants = () => {
+  return {
+    jwtSecret: process.env.JWT_SECRET,
+  };
 };

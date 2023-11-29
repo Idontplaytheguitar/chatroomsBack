@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../db/schemas/User';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -10,7 +10,7 @@ export class UserService {
 
   async getUser(username: string): Promise<User> {
     try {
-      const user = await this.userModel.findOne({ name: username }).exec();
+      const user = await this.userModel.findOne({ username: username }).exec();
       return user;
     } catch (error) {
       console.error('Error fetching users:', error);
