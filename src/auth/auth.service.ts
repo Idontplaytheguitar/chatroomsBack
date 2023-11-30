@@ -14,18 +14,22 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.getUser(username);
     if (user && (await bcrypt.compare(pass, user.password))) {
-      return 'Match';
+      return { username: user.username, id: user._id };
     }
     throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
-    return {
-      access_token: this.jwtService.sign(payload, {
-        secret: constants().jwtSecret,
-      }),
-    };
+  async login(user: { username: string; id: string }) {
+    const payload = { ...user };
+    try {
+      return {
+        access_token: this.jwtService.sign(payload, {
+          secret: constants().jwtSecret,
+        }),
+      };
+    } catch {
+      throw new HttpException('Problem at log in', HttpStatus.UNAUTHORIZED);
+    }
   }
 
   async register(username: string, password: string): Promise<any> {
@@ -33,8 +37,10 @@ export class AuthService {
       const newUser = await this.usersService.postUser(username, password);
       return newUser;
     } catch (e) {
-      console.log(e);
-      return e;
+      throw new HttpException(
+        'Problem creating the user',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
