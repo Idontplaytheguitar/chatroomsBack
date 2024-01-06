@@ -14,7 +14,7 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.getUser(username);
     if (user && (await bcrypt.compare(pass, user.password))) {
-      return { username: user.username, id: user._id };
+      return { username: user.username };
     }
     throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
   }
@@ -32,9 +32,17 @@ export class AuthService {
     }
   }
 
-  async register(username: string, password: string): Promise<any> {
+  async register(
+    username: string,
+    email: string,
+    password: string,
+  ): Promise<any> {
     try {
-      const newUser = await this.usersService.postUser(username, password);
+      const newUser = await this.usersService.postUser(
+        username,
+        email,
+        password,
+      );
       return newUser;
     } catch (e) {
       throw new HttpException(

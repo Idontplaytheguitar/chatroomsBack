@@ -6,7 +6,9 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {
+    userModel.createIndexes();
+  }
 
   async getUser(username: string): Promise<User> {
     try {
@@ -18,13 +20,18 @@ export class UserService {
     }
   }
 
-  async postUser(username: string, password: string): Promise<User> {
+  async postUser(
+    username: string,
+    email: string,
+    password: string,
+  ): Promise<User> {
     const hashedPass = await bcrypt.hash(password, await bcrypt.genSalt());
     try {
-      const newUser: User = await this.userModel.create({
+      const newUser = await new this.userModel({
         username: username,
+        email: email,
         password: hashedPass,
-      });
+      }).save();
       return newUser;
     } catch (error) {
       console.error('Error creating user:', error);

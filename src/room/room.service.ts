@@ -33,7 +33,7 @@ export class RoomService {
         duration: duration,
         listed: listed,
         chat: [],
-        users: [creator._id],
+        users: [creator.username],
       });
       return newRoom;
     } catch (error) {
