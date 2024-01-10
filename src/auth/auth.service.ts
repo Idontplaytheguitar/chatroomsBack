@@ -43,12 +43,16 @@ export class AuthService {
         email,
         password,
       );
-      return newUser;
+      return {
+        access_token: this.jwtService.sign(
+          { username: newUser.username, id: newUser.id },
+          {
+            secret: constants().jwtSecret,
+          },
+        ),
+      };
     } catch (e) {
-      throw new HttpException(
-        'Problem creating the user',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Problem registering', HttpStatus.BAD_REQUEST);
     }
   }
 
